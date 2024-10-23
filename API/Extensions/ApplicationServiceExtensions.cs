@@ -1,4 +1,5 @@
 using System;
+using System.Net.Security;
 using API.Data;
 using API.Interfaces;
 using API.Services;
@@ -18,7 +19,8 @@ public static class ApplicationServiceExtensions
         services.AddCors();
         //Add token service
         services.AddScoped<ITokenService, TokenService>(); //services are created once per client requrest
-
+        services.AddScoped<IUserRepository, UserRespository>();
+        services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         return services;
     }
 }
