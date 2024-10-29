@@ -48,3 +48,9 @@
     border-top: 1px solid #eee;
     padding: 15px 0;
 }
+
+
+/* Global style for ng-gallery */
+::ng-deep ng-gallery .gallery-container {
+    background-color: white !important;
+}
