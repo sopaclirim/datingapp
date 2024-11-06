@@ -1,5 +1,3 @@
-using System;
-using System.Net.Security;
 using API.Data;
 using API.Helpers;
 using API.Interfaces;
@@ -24,6 +22,8 @@ public static class ApplicationServiceExtensions
         services.AddScoped<IUserRepository, UserRespository>();
 
         services.AddScoped<IPhotoService, PhotoService>();
+
+        services.AddScoped<LogUserActivity>();
 
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
