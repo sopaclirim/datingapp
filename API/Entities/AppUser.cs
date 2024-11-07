@@ -31,7 +31,7 @@ public class AppUser
 
     public List<Photo> Photos { get; set; } = [];
 
-    // public int GetAge(){
-    //     return DateOfBirth.CalculateAge(); //metoden calculateAge e thirrim prej klases statike te folderi Extensions
-    // }
+    public List<UserLike> LikedByUsers { get; set; } = [];
+
+    public List<UserLike> LikedUsers { get; set; } = [];
 }
