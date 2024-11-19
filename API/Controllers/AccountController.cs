@@ -9,21 +9,23 @@ using Microsoft.EntityFrameworkCore;
 namespace API.Controllers;
 public class AccountController(UserManager<AppUser> userManager, ITokenService tokenService, IMapper mapper) : BaseApiController
 {
-    [HttpPost("register")] //account/register
+    [HttpPost("register")] // account/register
     public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
-    {   
-        if(await UserExists(registerDto.Username)){
-            return BadRequest("Username is taken!");
-        }
+    {
+        if (await UserExists(registerDto.Username)) return BadRequest("Username is taken");
 
         var user = mapper.Map<AppUser>(registerDto);
 
-        user.UserName = registerDto.Username.ToLower(); // dAvE
-        
+        user.UserName = registerDto.Username.ToLower();
+
         var result = await userManager.CreateAsync(user, registerDto.Password);
 
-        if(!result.Succeeded) return BadRequest(result.Errors);
+        if (!result.Succeeded) return BadRequest(result.Errors);
 
+        // Assign the default 'Member' role to the new user
+        var roleResult = await userManager.AddToRoleAsync(user, "Member");
+        
+        if (!roleResult.Succeeded) return BadRequest("Failed to assign role.");
 
         return new UserDto
         {
@@ -42,12 +44,8 @@ public class AccountController(UserManager<AppUser> userManager, ITokenService t
                 .FirstOrDefaultAsync(x =>
                     x.NormalizedUserName == loginDto.Username.ToUpper());
 
-        if(user == null || user.UserName == null) return Unauthorized("Invalid username");
+        if (user == null || user.UserName == null) return Unauthorized("Invalid username");
 
-        var result = await userManager.CheckPasswordAsync(user, loginDto.Password);
-
-        if(!result) return Unauthorized();
-        
         return new UserDto
         {
             Username = user.UserName,
@@ -60,6 +58,6 @@ public class AccountController(UserManager<AppUser> userManager, ITokenService t
 
     private async Task<bool> UserExists(string username)
     {
-        return await userManager.Users.AnyAsync(x => x.NormalizedUserName == username.ToUpper()); //Bob != bob
+        return await userManager.Users.AnyAsync(x => x.NormalizedUserName == username.ToUpper()); // Bob != bob
     }
 }

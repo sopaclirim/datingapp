@@ -13,7 +13,10 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/client",
+            "outputPath": {
+              "base": "../API/wwwroot",
+              "browser": ""
+            },
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -28,7 +31,7 @@
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
               "node_modules/font-awesome/css/font-awesome.min.css",
-              "node_modules/bootswatch/dist/united/bootstrap.min.css",
+              "node_modules/bootswatch/dist/zephyr/bootstrap.min.css",
               "node_modules/ngx-spinner/animations/line-scale-party.css",
               "node_modules/ngx-toastr/toastr.css",
               "src/styles.css"
@@ -40,8 +43,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "1.5mb",
+                  "maximumError": "2mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -49,6 +52,11 @@
                   "maximumError": "4kb"
                 }
               ],
+              "optimization": {
+                "styles": {
+                  "inlineCritical": false
+                }
+              },
               "outputHashing": "all"
             },
             "development": {

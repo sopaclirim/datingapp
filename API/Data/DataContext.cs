@@ -5,11 +5,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Data;
 
-public class DataContext(DbContextOptions options) : IdentityDbContext<AppUser, AppRole, int, IdentityUserClaim<int>, AppUserRole,      IdentityUserLogin<int>, IdentityRoleClaim<int>, IdentityUserToken<int>>(options)
+public class DataContext(DbContextOptions options) : IdentityDbContext<AppUser, AppRole, int,
+    IdentityUserClaim<int>, AppUserRole, IdentityUserLogin<int>, IdentityRoleClaim<int>,
+    IdentityUserToken<int>>(options)
 {
-
-    public DbSet<UserLike> Likes{ get; set; }
+    public DbSet<UserLike> Likes { get; set; }
     public DbSet<Message> Messages { get; set; }
+    public DbSet<Group> Groups { get; set; }
+    public DbSet<Connection> Connections { get; set; }
+    public DbSet<Photo> Photos { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -20,12 +24,12 @@ public class DataContext(DbContextOptions options) : IdentityDbContext<AppUser, 
             .WithOne(u => u.User)
             .HasForeignKey(ur => ur.UserId)
             .IsRequired();
+
         builder.Entity<AppRole>()
             .HasMany(ur => ur.UserRoles)
             .WithOne(u => u.Role)
             .HasForeignKey(ur => ur.RoleId)
             .IsRequired();
-
 
         builder.Entity<UserLike>()
             .HasKey(k => new { k.SourceUserId, k.TargetUserId });
@@ -40,7 +44,7 @@ public class DataContext(DbContextOptions options) : IdentityDbContext<AppUser, 
             .HasOne(s => s.TargetUser)
             .WithMany(l => l.LikedByUsers)
             .HasForeignKey(s => s.TargetUserId)
-            .OnDelete(DeleteBehavior.Cascade); //ne SQL Server duhet me shkru DeleteBehavior.NoAction
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder.Entity<Message>()
             .HasOne(x => x.Recipient)
@@ -51,5 +55,7 @@ public class DataContext(DbContextOptions options) : IdentityDbContext<AppUser, 
             .HasOne(x => x.Sender)
             .WithMany(x => x.MessagesSent)
             .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<Photo>().HasQueryFilter(p => p.IsApproved);
     }
 }
